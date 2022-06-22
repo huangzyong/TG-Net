@@ -88,7 +88,7 @@ def init_net(net, init_type='normal', init_gain=0.02, gpu_id='cuda:0'):
     return net
 
 
-def proposed(input_nc, output_nc, ngf, norm='batch', use_dropout=False, init_type='normal', init_gain=0.02, gpu_id='cuda:0'):
+def TG-Net(input_nc, output_nc, ngf, norm='batch', use_dropout=False, init_type='normal', init_gain=0.02, gpu_id='cuda:0'):
     net = TransUNet(img_dim=256,
                     in_channels=1,
                     out_channels=128,  # 128
