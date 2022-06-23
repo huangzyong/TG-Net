@@ -99,10 +99,6 @@ def TG-Net(input_nc, output_nc, ngf, norm='batch', use_dropout=False, init_type=
     return init_net(net, init_type, init_gain, gpu_id)
 
 
-
-
-
-<<<<<<< HEAD
 class ConvBlock(nn.Module):
     def __init__(self, in_channels, out_channels, down=True, use_act=True, **kwargs):
         super().__init__()
@@ -128,15 +124,6 @@ class ResidualBlock(nn.Module):
 
     def forward(self, x):
         return x + self.residual(x)
-=======
-
-
-
-
-
-
-
->>>>>>> 28d5088249dfad0ae9c8dbf221f6029d1f695f0f
 
 
 class Generator(nn.Module):
@@ -205,81 +192,6 @@ class Single_level_densenet(nn.Module):
         del outs
         return out_final
 
-
-# Defines the generator that consists of Resnet blocks between a few
-# downsampling/upsampling operations.
-class ResnetGenerator(nn.Module):
-    def __init__(self, input_nc, output_nc, ngf=64, norm_layer=nn.BatchNorm2d, use_dropout=False, n_blocks=9,
-                 padding_type='reflect'):
-        assert (n_blocks >= 0)
-        super(ResnetGenerator, self).__init__()
-        self.input_nc = input_nc
-        self.output_nc = output_nc
-        self.ngf = ngf
-        if type(norm_layer) == functools.partial:
-            use_bias = norm_layer.func == nn.InstanceNorm2d
-        else:
-            use_bias = norm_layer == nn.InstanceNorm2d
-
-        self.inc = Inconv(input_nc, ngf, norm_layer, use_bias)
-        self.down1 = Down(ngf, ngf * 2, norm_layer, use_bias)
-        self.down1_sk = SKConv(ngf * 2, ngf * 2)
-        self.down2 = Down(ngf * 2, ngf * 4, norm_layer, use_bias)
-        self.down2_sk = SKConv(ngf * 4, ngf * 4)
-        self.down3 = Down(ngf * 4, ngf * 8, norm_layer, use_bias)
-        self.down3_sk = SKConv(ngf * 8, ngf * 8)
-        #   self.down4 = Down(ngf * 8,ngf * 16,norm_layer,use_bias)
-        # self.down5 = Down(ngf * 16,ngf * 32,norm_layer,use_bias)
-        model = []
-        for i in range(n_blocks):
-            model += [ResBlock(ngf * 8, padding_type=padding_type, norm_layer=norm_layer, use_dropout=use_dropout,
-                               use_bias=use_bias)]
-        self.resblocks = nn.Sequential(*model)
-        # self.up1 = Up(ngf * 32, ngf * 16, norm_layer, use_bias)
-        #  self.up1 = Up(ngf * 16, ngf * 8, norm_layer, use_bias)
-        self.up1 = Up(ngf * 8, ngf * 4, norm_layer, use_bias)
-        self.up1_sk = SKConv(ngf * 4, ngf * 4)
-        self.up2 = Up(ngf * 4, ngf * 2, norm_layer, use_bias)
-        self.up2_sk = SKConv(ngf * 2, ngf * 2)
-        self.up3 = Up(ngf * 2, ngf, norm_layer, use_bias)
-        self.up3_sk = SKConv(ngf * 1, ngf * 1)
-        self.outc = Outconv(ngf, output_nc)
-
-    def forward(self, input):
-        out = {}
-        out['in'] = self.inc(input)
-
-        out['d1'] = self.down1(out['in'])
-        # out['d1_sk'] = self.down1_sk( out['d1'])
-
-        out['d2'] = self.down2(out['d1'])
-        #  out['d2_sk'] = self.down2_sk(out['d2'])
-        out['d3'] = self.down3(out['d2'])
-        out['d3_sk'] = self.down3_sk(out['d3'])
-        #  out['d4'] = self.down4(out['d3'])
-
-        # out['d5'] = self.down5(out['d4'])
-
-        out['bottle'] = self.resblocks(out['d3_sk'])
-
-        out['u1'] = self.up1(out['bottle'])
-        out['u1_sk'] = self.up1_sk(out['u1'])
-
-        out['u2'] = self.up2(out['u1_sk'])
-        # out['u2_sk'] = self.up2_sk(out['u2'])
-        out['u3'] = self.up3(out['u2'])
-        #  out['u3_sk'] = self.up3_sk(out['u3'])
-        # out['u4'] = self.up4(out['u3'])
-
-        # out['u5'] = self.up5(out['u4'])
-
-        return self.outc(out['u3'])
-
-
-<<<<<<< HEAD
-
-=======
->>>>>>> 28d5088249dfad0ae9c8dbf221f6029d1f695f0f
 
 class Inconv(nn.Module):
     def __init__(self, in_ch, out_ch, norm_layer, use_bias):
@@ -389,8 +301,6 @@ class Outconv(nn.Module):
         return x
 
 
-
-
 def define_D(input_nc, ndf, netD, n_layers_D=3, norm='batch', use_sigmoid=False, init_type='normal', init_gain=0.02, gpu_id='cuda:0'):
     net = None
     norm_layer = get_norm_layer(norm_type=norm)
@@ -407,7 +317,6 @@ def define_D(input_nc, ndf, netD, n_layers_D=3, norm='batch', use_sigmoid=False,
     return init_net(net, init_type, init_gain, gpu_id)
 
 
-# Defines the PatchGAN discriminator with the specified arguments.
 class NLayerDiscriminator(nn.Module):
     def __init__(self, input_nc, ndf=64, n_layers=3, norm_layer=nn.BatchNorm2d, use_sigmoid=False):
         super(NLayerDiscriminator, self).__init__()
@@ -689,14 +598,14 @@ class DecoderBottleneck(nn.Module):
         self.cat_f = cat_fuse(in_channels, out_channels)
 
     def forward(self, x, x_concat=None):
-        x = self.up_sample(x)  # 自己的上采样模块
+        x = self.up_sample(x)  
 
         # x = self.upsample(x)
         # if x_concat is not None:
         #     x = torch.cat([x_concat, x], dim=1)
         # x = self.layer(x)
 
-        x = self.cat_f(x, x_concat)  # 融合模块
+        x = self.cat_f(x, x_concat) 
 
         return x
 
@@ -742,12 +651,11 @@ class up_sample(nn.Module):
 
 
 
-
 class Encoder(nn.Module):
     def __init__(self, img_dim, in_channels, out_channels, head_num, mlp_dim, block_num, patch_dim):
         super().__init__()
 
-        # TODO============================= 利用 unfold 函数 encoding =====================
+        # TODO=============== unfold  encoding ==============
         self.conv_256 = nn.Sequential(nn.Conv2d(in_channels, 64, kernel_size=5, stride=1, padding=2, bias=False),
                                       nn.BatchNorm2d(64),
                                       nn.ReLU(inplace=True))
@@ -766,8 +674,6 @@ class Encoder(nn.Module):
         self.unfold = nn.Unfold(kernel_size=2, dilation=1, padding=0, stride=2)
 
    
-
-<<<<<<< HEAD
         self.x0 = nn.Sequential(nn.Conv2d(in_channels, 64, kernel_size=7, stride=1, padding=3, bias=False),
                                 nn.BatchNorm2d(64),
                                 nn.ReLU(inplace=True))
@@ -777,12 +683,12 @@ class Encoder(nn.Module):
         self.encoder1 = EncoderBottleneck(out_channels, out_channels * 2, stride=2)
         self.encoder2 = EncoderBottleneck(out_channels * 2, out_channels * 4, stride=2)
         self.encoder3 = EncoderBottleneck(out_channels * 4, out_channels * 8, stride=2)  # 16*16
-=======
+
     
->>>>>>> 28d5088249dfad0ae9c8dbf221f6029d1f695f0f
+
 
         self.vit_img_dim = img_dim // patch_dim  # 256 // 16 = 16
-        # self.vit_img_dim = 9
+
         self.vit = ViT(self.vit_img_dim, out_channels * 8, out_channels * 8,
                        head_num, mlp_dim, block_num, patch_dim=1, classification=False)
 
@@ -793,7 +699,7 @@ class Encoder(nn.Module):
 
     def forward(self, x):
 
-        # # TODO   unfold 函数 **********
+        # # TODO   unfold **********
         x0 = self.conv_256(x)  # b*64*256*256
         x_un_16 = self.un_16(x)
         x_un_32 = self.un_32(x)
@@ -808,14 +714,10 @@ class Encoder(nn.Module):
         x3 = unf_32.view(x.shape[0], -1, unf_32.shape[1], unf_32.shape[1])  # b*512*32*32
         x_out = unf_16.view(x.shape[0], -1, unf_16.shape[1], unf_16.shape[1])  # b*1024*16*16
 
-<<<<<<< HEAD
-
-        # TODO 
-        x = self.vit(x_out)
-=======
         x = self.vit(x_out)
 
->>>>>>> 28d5088249dfad0ae9c8dbf221f6029d1f695f0f
+        x = self.vit(x_out)
+
         x = rearrange(x, "b (x y) c -> b c x y", x=self.vit_img_dim, y=self.vit_img_dim)  # b*1024*16*16
         x = self.cat_fuse(x, x_out)  # b*512*16*16
 
@@ -877,11 +779,6 @@ class TransUNet(nn.Module):
         return x
 
 
-<<<<<<< HEAD
-=======
-
->>>>>>> 28d5088249dfad0ae9c8dbf221f6029d1f695f0f
-
 class BasicConv2d(nn.Module):
     def __init__(self, in_channels, out_channels, **kwargs):
         super(BasicConv2d, self).__init__()
@@ -895,11 +792,6 @@ class BasicConv2d(nn.Module):
         return x
 
 
-<<<<<<< HEAD
-=======
-
-
->>>>>>> 28d5088249dfad0ae9c8dbf221f6029d1f695f0f
 class FUSE(nn.Module):
     def __init__(self, in_channels, m_channels, out_channels, **kwargs):
         super(FUSE, self).__init__()
