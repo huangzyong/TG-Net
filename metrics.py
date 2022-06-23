@@ -7,6 +7,11 @@ def dice(input, target):
     return score.mean()
 
 
+<<<<<<< HEAD
+=======
+
+
+>>>>>>> 28d5088249dfad0ae9c8dbf221f6029d1f695f0f
 
 def recall(input, target):
     axes = tuple(range(1, input.dim()))

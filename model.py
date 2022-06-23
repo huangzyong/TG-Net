@@ -102,6 +102,7 @@ def TG-Net(input_nc, output_nc, ngf, norm='batch', use_dropout=False, init_type=
 
 
 
+<<<<<<< HEAD
 class ConvBlock(nn.Module):
     def __init__(self, in_channels, out_channels, down=True, use_act=True, **kwargs):
         super().__init__()
@@ -127,6 +128,15 @@ class ResidualBlock(nn.Module):
 
     def forward(self, x):
         return x + self.residual(x)
+=======
+
+
+
+
+
+
+
+>>>>>>> 28d5088249dfad0ae9c8dbf221f6029d1f695f0f
 
 
 class Generator(nn.Module):
@@ -266,7 +276,10 @@ class ResnetGenerator(nn.Module):
         return self.outc(out['u3'])
 
 
+<<<<<<< HEAD
 
+=======
+>>>>>>> 28d5088249dfad0ae9c8dbf221f6029d1f695f0f
 
 class Inconv(nn.Module):
     def __init__(self, in_ch, out_ch, norm_layer, use_bias):
@@ -752,9 +765,9 @@ class Encoder(nn.Module):
                                     nn.ReLU(inplace=True))
         self.unfold = nn.Unfold(kernel_size=2, dilation=1, padding=0, stride=2)
 
-        # TODO============================= 一般卷积 encoding =====================
-        # self.conv1 = nn.Conv2d(in_channels, out_channels, kernel_size=7, stride=2, padding=3, bias=False)
+   
 
+<<<<<<< HEAD
         self.x0 = nn.Sequential(nn.Conv2d(in_channels, 64, kernel_size=7, stride=1, padding=3, bias=False),
                                 nn.BatchNorm2d(64),
                                 nn.ReLU(inplace=True))
@@ -764,6 +777,9 @@ class Encoder(nn.Module):
         self.encoder1 = EncoderBottleneck(out_channels, out_channels * 2, stride=2)
         self.encoder2 = EncoderBottleneck(out_channels * 2, out_channels * 4, stride=2)
         self.encoder3 = EncoderBottleneck(out_channels * 4, out_channels * 8, stride=2)  # 16*16
+=======
+    
+>>>>>>> 28d5088249dfad0ae9c8dbf221f6029d1f695f0f
 
         self.vit_img_dim = img_dim // patch_dim  # 256 // 16 = 16
         # self.vit_img_dim = 9
@@ -792,9 +808,14 @@ class Encoder(nn.Module):
         x3 = unf_32.view(x.shape[0], -1, unf_32.shape[1], unf_32.shape[1])  # b*512*32*32
         x_out = unf_16.view(x.shape[0], -1, unf_16.shape[1], unf_16.shape[1])  # b*1024*16*16
 
+<<<<<<< HEAD
 
         # TODO 
         x = self.vit(x_out)
+=======
+        x = self.vit(x_out)
+
+>>>>>>> 28d5088249dfad0ae9c8dbf221f6029d1f695f0f
         x = rearrange(x, "b (x y) c -> b c x y", x=self.vit_img_dim, y=self.vit_img_dim)  # b*1024*16*16
         x = self.cat_fuse(x, x_out)  # b*512*16*16
 
@@ -856,6 +877,10 @@ class TransUNet(nn.Module):
         return x
 
 
+<<<<<<< HEAD
+=======
+
+>>>>>>> 28d5088249dfad0ae9c8dbf221f6029d1f695f0f
 
 class BasicConv2d(nn.Module):
     def __init__(self, in_channels, out_channels, **kwargs):
@@ -870,6 +895,11 @@ class BasicConv2d(nn.Module):
         return x
 
 
+<<<<<<< HEAD
+=======
+
+
+>>>>>>> 28d5088249dfad0ae9c8dbf221f6029d1f695f0f
 class FUSE(nn.Module):
     def __init__(self, in_channels, m_channels, out_channels, **kwargs):
         super(FUSE, self).__init__()
