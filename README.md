@@ -1,2 +1,2 @@
 # TG-Net
-You can find TG-Net in models.py
+You can find TG-Net in the models.py
